@@ -1,24 +1,27 @@
 const express = require("express");
 const app = express();
 
-const VERIFY_TOKEN = "test123";
+app.use(express.json());
 
-// 🔹 Route de vérification Meta (OBLIGATOIRE)
+// Route de test Render
+app.get("/", (req, res) => {
+  res.send("Bot WhatsApp actif ✅");
+});
+
+// 🔑 Route Webhook Meta (OBLIGATOIRE)
 app.get("/webhook", (req, res) => {
+  const VERIFY_TOKEN = "test123";
+
   const mode = req.query["hub.mode"];
   const token = req.query["hub.verify_token"];
   const challenge = req.query["hub.challenge"];
 
   if (mode === "subscribe" && token === VERIFY_TOKEN) {
-    return res.status(200).send(challenge);
+    console.log("Webhook vérifié");
+    res.status(200).send(challenge);
   } else {
-    return res.sendStatus(403);
+    res.sendStatus(403);
   }
-});
-
-// 🔹 Route simple pour test
-app.get("/", (req, res) => {
-  res.send("Serveur actif ✅");
 });
 
 const PORT = process.env.PORT || 3000;
